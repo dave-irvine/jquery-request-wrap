@@ -4,7 +4,12 @@
   "description": "Wrap jQuery's Ajax implementation to work like the nodejs Request module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepublish": "npm test && npm run build && git diff --exit-code --quiet",
+    "preversion": "npm test && npm run build && git diff --exit-code --quiet",
+    "postversion": "git push && git push --tags",
+    "pretest": "./node_modules/.bin/eslint src/",
+    "test": "./node_modules/.bin/mocha --compilers js:babel-core/register",
+    "build": "./node_modules/.bin/babel src --out-dir lib"
   },
   "repository": {
     "type": "git",
