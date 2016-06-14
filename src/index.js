@@ -1,14 +1,12 @@
 import $ from 'jquery';
 
-function success(data, textStatus, jqXHR, callback) {
-    //Callback has signature (error, response, body)
-    const body = data,
-        headers = jqXHR.getAllResponseHeaders().split('\r\n');
+function parsejqXHRHeaders(jqXHR) {
+    const headers = jqXHR.getAllResponseHeaders().split('\r\n');
 
     let headersKVP = {};
 
     headers.forEach((header) => {
-        let headerSplit = header.split(':');
+        const headerSplit = header.split(':');
 
         if (headerSplit[0] && headerSplit[1]) {
             let headerName = headerSplit[0];
@@ -17,18 +15,24 @@ function success(data, textStatus, jqXHR, callback) {
         }
     });
 
+    return headersKVP;
+}
+
+function success(data, textStatus, jqXHR, callback) {
+    const body = data;
+
     let response = {
         statusCode: jqXHR.status,
-        headers: headersKVP
+        headers: parsejqXHRHeaders(jqXHR)
     };
 
     if (callback) {
+        //Callback has signature (error, response, body)
         callback(null, response, body);
     }
 }
 
 function error(jqXHR, textStatus, errorThrown, callback) {
-    //Callback has signature (error, response, body)
     const error = jqXHR.statusText,
         response = {
             statusCode: jqXHR.status
@@ -36,6 +40,7 @@ function error(jqXHR, textStatus, errorThrown, callback) {
         body = jqXHR.responseText;
 
     if (callback) {
+        //Callback has signature (error, response, body)
         callback(error, response, body);
     }
 }
@@ -96,5 +101,10 @@ export default {
         jQueryOpts.data = opts.body;
     
         $.ajax(opts.uri, jQueryOpts);
-    }
+    },
+
+    error: error,
+    parsejqXHRHeaders: parsejqXHRHeaders,
+    setupJQueryOpts: setupJQueryOpts,
+    success: success
 };
