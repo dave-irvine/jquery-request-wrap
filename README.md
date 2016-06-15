@@ -3,7 +3,7 @@
 jquery-request-wrap
 ----
 
-Wrap jQuery's Ajax implementation to work like the nodejs Request module
+Wrap jQuery's Ajax implementation to provide a convenience API like the nodejs Request module.
 
 ##Installation
 
